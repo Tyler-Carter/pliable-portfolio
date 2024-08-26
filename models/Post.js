@@ -1,26 +1,5 @@
-const mongoose = require('mongoose');
+//Defines the postgres DB connection information
+const DB_NAME = 'postgres';
 
-const postSchema = new mongoose.Schema({
-    author: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    title: {
-        type: String,
-        default: 'Untitled'
-    },
-    description: {
-        type: String,
-        default: ''
-    },
-    content: {
-        type: String,
-        default: ''
-    },
-    image: {
-        type: Buffer
-    }
-}, {collection: 'posts', timestamps: true});
-
-module.exports = mongoose.model('Post', postSchema);
+//Instantiates a new instance of sequelize used to create the dB schema
+const Sequelize, DataTypes = require('sequelize'); //TODO: Will I allow for comments to be left anywhere?//const sequelize = new Sequelize(POSTGRES_URI);

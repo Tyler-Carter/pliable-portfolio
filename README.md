@@ -7,7 +7,7 @@ Use this template to initialize your Express, MongoDB, and Node.js web applicati
 ### Installation
 * Download [Node.js](https://nodejs.org/en/download/).   
 * Download the [nodemon](https://www.npmjs.com/package/nodemon) package globally.  
-* Download [MongoDB Community Server](https://www.mongodb.com/try/download/community).
+* Download [PostgreSQL client/server](https://developer.fedoraproject.org/tech/database/postgresql).
 
 ### Initialization & Setup
 1. Create a `.env` file to hold environment variables. ([dotenv module](https://www.npmjs.com/package/dotenv))
@@ -26,6 +26,7 @@ Use this template to initialize your Express, MongoDB, and Node.js web applicati
 
 ## ⚙️ Usage/Workflow Details
 ### Development Process
+<!-- YOU ARE HERE 08/20/24 -->
 1. Ensure that your MongoDB server is running locally for database functionality. 
 2. Run `nodemon` in your terminal while testing to automatically refresh your back-end after editing.  
 3. Develop front-end by creating HTML pages w/ EJS in the `views` directory and editing styles in `public/styles/styles.css`.

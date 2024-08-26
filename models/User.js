@@ -1,59 +1,59 @@
 const bcrypt = require('bcryptjs');
-const mongoose = require('mongoose');
+const { lowerCase, valuesIn } = require('lodash');
+const { DataTypes } = require('sequelize'); //TODO: Change to use sequelize instead of mongoose
 const sharp = require('sharp');
 const validator = require('validator');
 
-const userSchema = new mongoose.Schema({
-    firstName: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    lastName: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    email: {
-        type: String,
-        required: true,
-        lowercase: true,
-        trim: true,
-        unique: true,
-        validate: {
-            validator: function (value) {
-                return validator.isEmail(value);
-            },
-            message: props => `${props.value} is not a valid email!`
-        }
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    plan: {
-        type: String,
-        enum: {
-            values: ['Free', 'Premium', 'Admin'],
-            message: '{VALUE} is not supported'
+// A model definition is exported as a function
+// The function will automatically receive the Sequelize connection object as a parameter
+module.exports = (sequelize) => {
+    sequelize.define('user' , {
+        //The default ID section was included but can be omitted
+        userId: {
+            allowNull: false,
+            autoIncrement: true,
+            primaryKey: true,
+            type: DataTypes.INTEGER
         },
-        default: 'Free'
-    },
-    posts: {
-        type: [mongoose.Schema.Types.ObjectId],
-        default: []
-    },
-    profile: {
-        type: {photo: Buffer}
-        // default: {photo: [declared below in 'save' hook]}
-    }
-}, {collection: 'users', timestamps: true});
+        username: {
+            allowNull: false,
+            type: DataTypes.STRING,
+            unique: true,
+            validate: {
+                is: /^\w{5,}$/
+            }
+        },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            lowerCase: true,
+            trim: true,
+            unique: true,
+            validate: {
+                validator: function(value) {
+                    return validator.isEmail(value);
+                },
+                message: props => `${props.value} is not a valid email.`
+            }
+        },
+        password: {
+            type: DataTypes.STRING,
+            required: true,
+            validate: {
+                validator: function(value) {
+                    return validator.isStrongPassword(value);
+                },
+                message: props => `${props.value} is not a strong password, please try again.`
+            }
+        }
+    });
+};
 
 /* ---------- HOOKS ---------- */
 /* ----- Pre ----- */
 userSchema.pre('save', async function (next) {
     // Condition will hold true when new user is created or password modification
-    if (this.isModified('password')) {
+    if (this.isModified('password')) {0
         this.password = await bcrypt.hash(this.password, 10);
     }
 

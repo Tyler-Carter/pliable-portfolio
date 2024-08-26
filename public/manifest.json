@@ -1,6 +1,6 @@
 {
-  "name": "Node.js/Express Template",
-  "short_name": "Alectrify - Bootstrap Node.js/Express Template",
+  "name": "Node.js/Express Webserver",
+  "short_name": "Tyler Carter - Bootstrap Node.js/Express Webserver/website",
   "icons": [
     {
       "src": "public/assets/favicon.ico",

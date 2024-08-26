@@ -10,7 +10,7 @@ const flash = require('connect-flash');
 const fs = require('fs-extra');
 const helmet = require('helmet');
 const methodOverride = require('method-override');
-const mongoose = require('mongoose');
+const { Sequelize } = require('sequelize');
 const morgan = require('morgan');
 const passport = require('passport');
 const path = require('path');
@@ -20,9 +20,9 @@ const session = require('express-session');
 const app = express();
 
 /* ---------- CONSTANTS ---------- */
-const DB_NAME = 'thinkcorpDB';
+const DB_NAME = 'postgres';
 const DOTENV_RESULT = dotenv.config();
-const MONGO_URI = process.env.MONGO_URI || `mongodb://localhost:27017/${DB_NAME}`;
+const POSTGRES_URI = process.env.POSTGRES_URI || `postgresql://127.0.0.1:5432/${DB_NAME}`;
 const PORT = process.env.PORT || 3000;
 
 /* ---------- FUNCTIONS ---------- */
@@ -81,13 +81,28 @@ app.use(session({
     }
 }));
 
-/* ----- Mongoose ----- */
-mongoose.connect(MONGO_URI, {
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).catch((err) => console.log(err));
+
+/* ----- Sequelize ----- */
+//New sequelize instance that pulls db connect info from dotenv node
+const sequelize = new Sequelize({
+    dialect: 'postgres',
+    storage: POSTGRES_URI,
+    logQueryParameters: true,
+    benchmark: true
+});
+
+//Imports model definition files from the local models directory
+const modelDefiners = [
+    require('./models/User.model'),
+];
+
+// This expression defines each model according to its associated file
+for (const modelDefiner of modelDefiners) {
+    modelDefiner(sequelize);
+}
+
+module.exports = sequelize;
+
 
 /* ----- Passport ----- */
 app.use(passport.initialize());
@@ -121,5 +136,4 @@ app.use((req, res) => {
 /* ---------- LAUNCH ---------- */
 app.listen(PORT, () => {
     console.log(chalk.blue(`🚀 Server running at http://localhost:${PORT}/`));
-    console.log(chalk.green('📝 Setup and details for developing this project: https://github.com/alectrify/starter-node-express-bootstrap\n'));
 });
