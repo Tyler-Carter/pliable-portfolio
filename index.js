@@ -83,13 +83,18 @@ app.use(session({
 
 
 /* ----- Sequelize ----- */
-//New sequelize instance that pulls db connect info from dotenv node
-const sequelize = new Sequelize({
+// New sequelize instance that pulls db connect info from dotenv node
+
+class User {
+    const user = new Sequelize(DB_NAME, )
+}
+
+/**const User = new Sequelize({
     dialect: 'postgres',
     storage: POSTGRES_URI,
     logQueryParameters: true,
     benchmark: true
-});
+});**/
 
 //Imports model definition files from the local models directory
 const modelDefiners = [
@@ -98,10 +103,10 @@ const modelDefiners = [
 
 // This expression defines each model according to its associated file
 for (const modelDefiner of modelDefiners) {
-    modelDefiner(sequelize);
+    modelDefiner(User);
 }
 
-module.exports = sequelize;
+module.exports = User;
 
 
 /* ----- Passport ----- */

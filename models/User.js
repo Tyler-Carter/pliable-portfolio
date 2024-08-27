@@ -1,14 +1,18 @@
+'use strict';
+
 const bcrypt = require('bcryptjs');
-const { lowerCase, valuesIn } = require('lodash');
-const { DataTypes } = require('sequelize'); //TODO: Change to use sequelize instead of mongoose
+const _ = require('lodash');
+const { DataTypes } = require('sequelize');
 const sharp = require('sharp');
 const validator = require('validator');
 
-// A model definition is exported as a function
-// The function will automatically receive the Sequelize connection object as a parameter
-module.exports = (sequelize) => {
-    sequelize.define('user' , {
-        //The default ID section was included but can be omitted
+// This is an extension of the model created in the index.js
+// The extension will be used to define attributes and pass on other included options
+// Each model object requires its own node within the ./models directory
+class User extends User{}
+
+User.init(
+    { // All of the model attributes are defined here
         userId: {
             allowNull: false,
             autoIncrement: true,
@@ -45,12 +49,18 @@ module.exports = (sequelize) => {
                 },
                 message: props => `${props.value} is not a strong password, please try again.`
             }
-        }
-    });
-};
+        },
+    },
+    // Below are other model options that will be included
+    { 
+        User, // This passes on the connection instance for us
+        modelName: 'User', // This names the model that is being passed on
+    },
+);
 
 /* ---------- HOOKS ---------- */
 /* ----- Pre ----- */
+
 userSchema.pre('save', async function (next) {
     // Condition will hold true when new user is created or password modification
     if (this.isModified('password')) {0
